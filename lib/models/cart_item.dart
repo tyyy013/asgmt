@@ -1,4 +1,6 @@
 import 'food_item.dart';
+import 'add_on.dart';
+
 
 class CartItem {
   final FoodItem foodItem;

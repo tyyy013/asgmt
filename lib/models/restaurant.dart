@@ -6,6 +6,7 @@ class Restaurant {
   final String description;
   final String imageUrl;
   final List<FoodItem> menu;
+  final String address; // Add address field
 
   Restaurant({
     required this.id,
@@ -13,5 +14,6 @@ class Restaurant {
     required this.description,
     required this.imageUrl,
     required this.menu,
+    this.address = '', // Default value
   });
 }

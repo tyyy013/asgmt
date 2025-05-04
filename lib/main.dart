@@ -9,6 +9,8 @@ import 'screens/cart_screen.dart';
 
 // Import providers
 import 'providers/cart_provider.dart';
+import 'providers/filter_provider.dart';
+import 'providers/restaurant_provider.dart'; // Add this import
 
 void main() {
   runApp(const MyApp());
@@ -19,8 +21,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => CartProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => FilterProvider()),
+        ChangeNotifierProvider(create: (context) => RestaurantProvider()), // Add this provider
+      ],
       child: MaterialApp(
         title: 'Food Ordering App',
         debugShowCheckedModeBanner: false,

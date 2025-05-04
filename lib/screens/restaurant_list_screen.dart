@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/cart_icon_badge.dart';
+import '../providers/restaurant_provider.dart';
+import '../models/restaurant.dart';
 
 class RestaurantListScreen extends StatelessWidget {
   const RestaurantListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final restaurantProvider = Provider.of<RestaurantProvider>(context);
+    final restaurants = restaurantProvider.restaurants;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Food Tiger'),
@@ -38,33 +44,15 @@ class RestaurantListScreen extends StatelessWidget {
 
           // Restaurant list
           Expanded(
-            child: ListView(
-              children: [
-                _buildRestaurantItem(
+            child: ListView.builder(
+              itemCount: restaurants.length,
+              itemBuilder: (context, index) {
+                final restaurant = restaurants[index];
+                return _buildRestaurantItem(
                   context,
-                  name: 'Malaysian Civil Madam',
-                  description: 'Serving traditional food',
-                  image: 'assets/restaurant1.jpg',
-                ),
-                _buildRestaurantItem(
-                  context,
-                  name: 'Pak Tam',
-                  description: 'Asian Fusion',
-                  image: 'assets/restaurant2.jpg',
-                ),
-                _buildRestaurantItem(
-                  context,
-                  name: 'Nasi Lemak Wang',
-                  description: 'You can find elite delicious Nasi Lemak here',
-                  image: 'assets/restaurant3.jpg',
-                ),
-                _buildRestaurantItem(
-                  context,
-                  name: 'Xin Bei Ma',
-                  description: 'You can find low-cost Chinese food here',
-                  image: 'assets/restaurant4.jpg',
-                ),
-              ],
+                  restaurant: restaurant,
+                );
+              },
             ),
           ),
         ],
@@ -75,13 +63,15 @@ class RestaurantListScreen extends StatelessWidget {
 
   Widget _buildRestaurantItem(
       BuildContext context, {
-        required String name,
-        required String description,
-        required String image,
+        required Restaurant restaurant,
       }) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/restaurant');
+        Navigator.pushNamed(
+          context,
+          '/restaurant',
+          arguments: restaurant.id, // Pass restaurant ID
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(8.0),
@@ -100,13 +90,13 @@ class RestaurantListScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Restaurant info - moved to the left
+            // Restaurant info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    restaurant.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
@@ -114,7 +104,7 @@ class RestaurantListScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    description,
+                    restaurant.description,
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 14.0,
@@ -122,15 +112,25 @@ class RestaurantListScreen extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    restaurant.address,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12.0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),
             const SizedBox(width: 12.0),
-            // Restaurant image - moved to the right
+            // Restaurant image
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.asset(
-                image,
+                restaurant.imageUrl,
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
